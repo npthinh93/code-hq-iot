@@ -11,6 +11,7 @@ import org.springframework.boot.autoconfigure.mongo.embedded.EmbeddedMongoAutoCo
 import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import reactor.core.publisher.Mono;
+import reactor.test.StepVerifier;
 
 import java.time.Instant;
 import java.util.Set;
@@ -27,8 +28,11 @@ public class DeviceReactiveRepositoryTest {
 
     @Test
     public void findById_NonExistedIdGiven_ShouldReturnEmpty() {
-        Mono<Device> result = deviceReactiveRepository.findById("test-01");
-        Assertions.assertTrue(result.blockOptional().isEmpty());
+        Mono<Device> byId = deviceReactiveRepository.findById("test-01");
+        StepVerifier
+                .create(byId)
+                .expectNextCount(0)
+                .verifyComplete();
     }
 
     @Test
@@ -42,8 +46,12 @@ public class DeviceReactiveRepositoryTest {
         dd.setTimestamp(Instant.now());
         dd.setTemperature(new Temperature("C", "23.3"));
         d.setData(Set.of(dd));
-        deviceReactiveRepository.save(d);
-
-        Assertions.assertEquals(deviceReactiveRepository.findByDeviceId(d.getDeviceId()).block().getDeviceId(), d.getDeviceId());
+        Mono<Device> save = deviceReactiveRepository.save(d);
+        StepVerifier
+                .create(save)
+                .consumeNextWith(s -> {
+                    Assertions.assertNotNull(s.getDeviceId());
+                })
+                .verifyComplete();
     }
 }

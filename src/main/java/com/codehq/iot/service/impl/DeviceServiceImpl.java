@@ -5,7 +5,7 @@ import com.codehq.iot.repository.DeviceReactiveRepository;
 import com.codehq.iot.service.DeviceService;
 import com.codehq.iot.service.dto.DeviceDTO;
 import com.codehq.iot.service.mapper.DeviceMapper;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.CollectionUtils;
 import reactor.core.publisher.Mono;
@@ -17,11 +17,20 @@ import java.time.Instant;
  * @author thinhnguyen on 24/03/2022
  */
 @Service
-@RequiredArgsConstructor
 public class DeviceServiceImpl implements DeviceService {
 
-    private final DeviceReactiveRepository deviceReactiveRepository;
-    private final DeviceMapper deviceMapper;
+    private DeviceReactiveRepository deviceReactiveRepository;
+    private DeviceMapper deviceMapper;
+
+    @Autowired
+    public void setDeviceReactiveRepository(DeviceReactiveRepository deviceReactiveRepository) {
+        this.deviceReactiveRepository = deviceReactiveRepository;
+    }
+
+    @Autowired
+    public void setDeviceMapper(DeviceMapper deviceMapper) {
+        this.deviceMapper = deviceMapper;
+    }
 
     @Override
     public void create(DeviceDTO dto) {
