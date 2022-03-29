@@ -1,0 +1,6 @@
+services:
+  codehq-mongodb:
+    image: mongo:4.2.12-bionic
+    container_name: codehq-mongodb
+    ports:
+      - 0.0.0.0:27017:27017

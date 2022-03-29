@@ -1,0 +1,16 @@
+server:
+  port: 8989
+
+# MongoDB Configuration
+spring:
+  data:
+    mongodb:
+      host: localhost
+      port: 27017
+      database: codehq-iot
+      embedded.version: 4.2.12
+
+logging:
+  level:
+    org.springframework.boot.autoconfigure.mongo.embedded: off
+    org.mongodb: off
